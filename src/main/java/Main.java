@@ -70,7 +70,7 @@ public class Main {
 
         //得到这个sheet一共有多少行数据，因为sheet.getLastRow不准
         for(int i=3;;i++){
-            index=getExcel2007Value((XSSFCell) sheet.getRow(i).getCell(0));
+            index=getCellValue(sheet.getRow(i).getCell(0));
             if(index.trim().equals("end")){
                 lastNum=i;
                 break;
@@ -79,15 +79,15 @@ public class Main {
 
         int endRow=0;
         for(int i=3;i<lastNum;i++){
-            officerName=getExcel2007Value((XSSFCell) sheet.getRow(i).getCell(1));
-            officerId=getExcel2007Value((XSSFCell) sheet.getRow(i).getCell(2));
+            officerName=getCellValue(sheet.getRow(i).getCell(1));
+            officerId=getCellValue(sheet.getRow(i).getCell(2));
             for(int j=i+1;j<=lastNum-1;j++){
                 String a,b;
                 a=b="";
                 Cell cella=sheet.getRow(j).getCell(1);
                 Cell cellb=sheet.getRow(j).getCell(2);
-                a=getExcel2007Value((XSSFCell) cella);
-                b=getExcel2007Value((XSSFCell) cellb);
+                a=getCellValue(cella);
+                b=getCellValue(cellb);
                 if((a.trim().equals("")||b.trim().equals(""))&&(b.trim().equals("")||b==null)){
                     cella.setCellValue(officerName);
                     cellb.setCellValue(officerId);
@@ -96,17 +96,22 @@ public class Main {
                     break;
                 }
             }
-            officerName=getExcel2007Value((XSSFCell) sheet.getRow(i).getCell(1));
-            officerId=getExcel2007Value((XSSFCell) sheet.getRow(i).getCell(2));
+            officerName=getCellValue(sheet.getRow(i).getCell(1));
+            officerId=getCellValue( sheet.getRow(i).getCell(2));
             for(int j=i+1;j<=lastNum-1;j++){
                 String a,b;
                 a=b="";
                 Cell cella=sheet.getRow(j).getCell(1);
                 Cell cellb=sheet.getRow(j).getCell(2);
-                a=getExcel2007Value((XSSFCell) cella);
-                b=getExcel2007Value((XSSFCell) cellb);
+                a=getCellValue(cella);
+                b=getCellValue(cellb);
                 if((a.trim().equals("")||b.trim().equals(""))&&(b.trim().equals("")||b==null)){
-                    cella.setCellValue(officerName);
+
+                    try{
+                        cella.setCellValue(officerName);
+                    }catch (Exception e){
+                        System.out.println(officerName);
+                    }
                     cellb.setCellValue(officerId);
                 }else{
                     i=j;
@@ -121,65 +126,29 @@ public class Main {
         }
         return wb;
     }
-    //2003
-    public static String getExcel2003Value(HSSFCell cell) {
-        String cellValue = "";
-        switch (cell.getCellType()) {
-            case HSSFCell.CELL_TYPE_STRING://字符串类型
-                cellValue = cell.getStringCellValue();
-                if(cellValue.trim().equals("")||cellValue.trim().length()<=0)
-                    cellValue=" ";
-                break;
-            case HSSFCell.CELL_TYPE_NUMERIC: //数值类型
-                cellValue = String.valueOf(cell.getNumericCellValue());
-                break;
-            case HSSFCell.CELL_TYPE_FORMULA: //公式
-                cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-                cellValue = String.valueOf(cell.getNumericCellValue());
-                break;
-            case HSSFCell.CELL_TYPE_BLANK:
-                cellValue= "";
-                break;
-            case HSSFCell.CELL_TYPE_BOOLEAN:
-                cellValue = Boolean.toString(cell.getBooleanCellValue());
-                break;
-            case HSSFCell.CELL_TYPE_ERROR:
-                cellValue = String.valueOf(cell.getErrorCellValue());
-                break;
-            default:
-                break;
-        }
-        return cellValue;
-    }
 
-    public static String getExcel2007Value(XSSFCell cell) {
-        String cellValue = "";
-        switch (cell.getCellType()) {
-            case XSSFCell.CELL_TYPE_STRING://字符串类型
-                cellValue = cell.getStringCellValue();
-                if(cellValue.trim().equals("")||cellValue.trim().length()<=0)
-                    cellValue=" ";
-                break;
-            case XSSFCell.CELL_TYPE_NUMERIC: //数值类型
-                cellValue = String.valueOf(cell.getNumericCellValue());
-                break;
-            case XSSFCell.CELL_TYPE_FORMULA: //公式
-                cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-                cellValue = String.valueOf(cell.getNumericCellValue());
-                break;
-            case XSSFCell.CELL_TYPE_BLANK:
-                cellValue= "";
-                break;
-            case XSSFCell.CELL_TYPE_BOOLEAN:
-                cellValue = Boolean.toString(cell.getBooleanCellValue());
-                break;
-            case XSSFCell.CELL_TYPE_ERROR:
-                cellValue = String.valueOf(cell.getErrorCellValue());
-                break;
-            default:
-                break;
+    public static String getCellValue(Cell cell){
+
+        if(cell == null) return "";
+
+        if(cell.getCellType() == Cell.CELL_TYPE_STRING){
+
+            return cell.getStringCellValue();
+
+        }else if(cell.getCellType() == Cell.CELL_TYPE_BOOLEAN){
+
+            return String.valueOf(cell.getBooleanCellValue());
+
+        }else if(cell.getCellType() == Cell.CELL_TYPE_FORMULA){
+
+            return cell.getCellFormula() ;
+
+        }else if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC){
+
+            return String.valueOf(cell.getNumericCellValue());
+
         }
-        return cellValue;
+        return "";
     }
 
 }
