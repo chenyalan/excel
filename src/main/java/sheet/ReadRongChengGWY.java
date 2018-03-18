@@ -1,24 +1,26 @@
-import org.apache.poi.hssf.usermodel.HSSFCell;
+package sheet;
+
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * created by 陈亚兰 on 18-3-13
- * 处理干部成员信息
+ * 处理干部成员信息 --容城-公务员
  */
-public class Main {
+public class ReadRongChengGWY {
     private final static String excel2003=".xls";
     private final static String excel2007=".xlsx";
     public static void main(String[] args) throws Exception {
-       String filePath="C:\\Users\\Administrator\\Desktop\\315";
+       String filePath="C:\\Users\\Administrator\\Desktop\\1待执行excel数据";
 
            getFiles(filePath);
 
@@ -38,7 +40,7 @@ public class Main {
             }else if(excel2007.equals(fileType)){
                workbook=readSheet(workbook,2007);
             }
-            FileOutputStream fo = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\315\\"+file.getName()); // 输出到文件
+            FileOutputStream fo = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\date\\"+file.getName()); // 输出到文件
             workbook.write(fo);
         }
 
@@ -59,72 +61,40 @@ public class Main {
     //读取excel文件
     private static Workbook readSheet(Workbook wb,int type) throws FileNotFoundException {
         Sheet sheet = wb.getSheetAt(0);//读取第一个sheet页表格内容
-        Object value = null;
-        Row row = null;
-        Cell cell = null;
-        String officerName;
-        String officerId;
-        String index;
-        int lastNum=0;
-
-
-        //得到这个sheet一共有多少行数据，因为sheet.getLastRow不准
-        for(int i=3;;i++){
-            index=getCellValue(sheet.getRow(i).getCell(0));
-            if(index.trim().equals("end")){
-                lastNum=i;
-                break;
-            }
-        }
-
-        int endRow=0;
-        for(int i=3;i<lastNum;i++){
-            officerName=getCellValue(sheet.getRow(i).getCell(1));
-            officerId=getCellValue(sheet.getRow(i).getCell(2));
-            for(int j=i+1;j<=lastNum-1;j++){
-                String a,b;
-                a=b="";
-                Cell cella=sheet.getRow(j).getCell(1);
-                Cell cellb=sheet.getRow(j).getCell(2);
-                a=getCellValue(cella);
-                b=getCellValue(cellb);
-                if((a.trim().equals("")||b.trim().equals(""))&&(b.trim().equals("")||b==null)){
-                    cella.setCellValue(officerName);
-                    cellb.setCellValue(officerId);
-                }else{
-                    i=j;
-                    break;
+        Row row;
+        Workbook newWork=new XSSFWorkbook();
+        Sheet sheetNew=newWork.createSheet();
+        Row rowNew;
+        Cell cellNew;
+        int rowNum=0;
+        for(Row r:wb.getSheetAt(0)){
+            rowNew=sheetNew.createRow(rowNum++);
+            int n=0;
+//            for(Cell c:r) {
+            for(int j = 0; j <=13; j++){
+                Cell c=r.getCell(j);
+                cellNew = rowNew.createCell(j);
+                if(c==null){
+                    continue;
                 }
-            }
-            officerName=getCellValue(sheet.getRow(i).getCell(1));
-            officerId=getCellValue( sheet.getRow(i).getCell(2));
-            for(int j=i+1;j<=lastNum-1;j++){
-                String a,b;
-                a=b="";
-                Cell cella=sheet.getRow(j).getCell(1);
-                Cell cellb=sheet.getRow(j).getCell(2);
-                a=getCellValue(cella);
-                b=getCellValue(cellb);
-                if((a.trim().equals("")||b.trim().equals(""))&&(b.trim().equals("")||b==null)){
-
-                    try{
-                        cella.setCellValue(officerName);
-                    }catch (Exception e){
-                        System.out.println(officerName);
+                if (c.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                    if (j ==10 ) {
+                            double d = c.getNumericCellValue();
+                            Date date = HSSFDateUtil.getJavaDate(d);
+//                            cellNew.setCellType(Cell.CELL_TYPE_STRING);
+                            SimpleDateFormat dformat = new SimpleDateFormat("yyyy-MM");
+                            String value = dformat.format(date);
+                            cellNew.setCellValue(value);
+                    }else{
+                        cellNew.setCellValue(getCellValue(c));
                     }
-                    cellb.setCellValue(officerId);
                 }else{
-                    i=j;
-                    break;
+                    cellNew.setCellValue(getCellValue(c));
                 }
+                n++;
             }
-
-            if(i==lastNum-1){
-                return wb;
-            }
-            i--;
         }
-        return wb;
+        return newWork;
     }
 
     public static String getCellValue(Cell cell){
@@ -144,8 +114,18 @@ public class Main {
             return cell.getCellFormula() ;
 
         }else if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC){
-
-            return String.valueOf(cell.getNumericCellValue());
+            String value;
+//            if(HSSFDateUtil.isCellDateFormatted(cell)){
+//                double d = cell.getNumericCellValue();
+//                        Date date = HSSFDateUtil.getJavaDate(d);
+//                        SimpleDateFormat dformat=new SimpleDateFormat("yyyy-MM-dd");
+//                        value= dformat.format(date);
+//                        return value;
+//            }else{
+//                value=String.valueOf(cell.getNumericCellValue());
+//            }
+            value=String.valueOf(cell.getNumericCellValue());
+            return value;
 
         }
         return "";

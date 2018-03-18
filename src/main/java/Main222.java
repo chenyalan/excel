@@ -1,47 +1,54 @@
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * created by 陈亚兰 on 18-3-13
- * 处理干部成员信息
+ * 雄安新区-个人信息下所有子目录所有.xlsx文件，存放在58目录下
  */
-public class Main {
+public class Main222 {
     private final static String excel2003=".xls";
     private final static String excel2007=".xlsx";
     public static void main(String[] args) throws Exception {
-       String filePath="C:\\Users\\Administrator\\Desktop\\315";
+       String filePath="C:\\Users\\Administrator\\Desktop\\XA数据（0310汇总版）\\XA数据（0310汇总版）\\雄安新区\\个人信息";
 
-           getFiles(filePath);
-
+//           getFiles(filePath);
+        test(filePath);
     }
 
-    private static void getFiles(String filePath) throws Exception {
-        File root=new File(filePath);
-        File[] files=root.listFiles();
-        for(File file:files){
+    private static void test(String fileDir) throws IOException {
+        List<File> fileList = new ArrayList<File>();
+        File fi= new File(fileDir);
+        File[] files = fi.listFiles();// 获取目录下的所有文件或文件夹
+        if (files == null) {// 如果目录为空，直接退出
+            return;
+        }
+        // 遍历，目录下的所有文件
+        for (File f : files) {
+            if (f.isFile()) {
+                if(f.getName().endsWith(".xlsx")){
+                    fileList.add(f);
+                }
+            } else if (f.isDirectory()) {
+                System.out.println(f.getAbsolutePath());
+                test(f.getAbsolutePath());
+            }
+        }
+        for (File file : fileList) {
             System.out.println(file.getAbsolutePath()+",name:"+file.getName());
             System.out.println("================================="+file.getName()+"=========================================");
             InputStream in=new FileInputStream(file);
             Workbook workbook=getWorkBook(in,file.getName());
-            String fileType=file.getName().substring(file.getName().lastIndexOf("."));
-            if(excel2003.equals(fileType)){
-               workbook=readSheet(workbook,2003);
-            }else if(excel2007.equals(fileType)){
-               workbook=readSheet(workbook,2007);
-            }
-            FileOutputStream fo = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\315\\"+file.getName()); // 输出到文件
+            FileOutputStream fo = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\58\\"+file.getName()); // 输出到文件
             workbook.write(fo);
         }
-
     }
 
     private static Workbook getWorkBook(InputStream in, String name) throws IOException {
@@ -69,16 +76,16 @@ public class Main {
 
 
         //得到这个sheet一共有多少行数据，因为sheet.getLastRow不准
-        for(int i=3;;i++){
-            index=getCellValue(sheet.getRow(i).getCell(0));
-            if(index.trim().equals("end")){
-                lastNum=i;
-                break;
-            }
-        }
-
+//        for(int i=3;;i++){
+//            index=getCellValue(sheet.getRow(i).getCell(0));
+//            if(index.trim().equals("end")){
+//                lastNum=i;
+//                break;
+//            }
+//        }
+        lastNum=2;  //很奇怪还就是2，sheet.getlastRow都不行
         int endRow=0;
-        for(int i=3;i<lastNum;i++){
+        for(int i=1;i<=lastNum;i++){
             officerName=getCellValue(sheet.getRow(i).getCell(1));
             officerId=getCellValue(sheet.getRow(i).getCell(2));
             for(int j=i+1;j<=lastNum-1;j++){

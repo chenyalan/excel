@@ -1,0 +1,15 @@
+-- 删除
+delete from rc_gaj_cgscxjg where huzhuxingming like '%家庭%';
+
+update rc_gaj_cgscxjg set member_name=huzhuxingming,member_id_card=id_card where name='';
+
+
+--  给name不为空的设置为户主,可不用
+update rc_gaj_cgscxjg set member_name='户主' where name!='';
+
+
+-- 补全name
+update rc_gaj_cgscxjg a,rc_gaj_cgscxjg b set a.`name`=b.`name` where a.name='' and a.id=b.id+1;
+
+-- 将家庭成员变为户主
+update rc_gaj_cgscxjg set member_name='户主' where name=huzhuxingming;

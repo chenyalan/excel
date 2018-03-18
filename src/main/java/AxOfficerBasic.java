@@ -1,27 +1,24 @@
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
 import java.io.*;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
- * created by 陈亚兰 on 18-3-13
- * 处理干部成员信息
+ * Created by 陈亚兰 on 2018/3/14.
+ * 安新----村干部 ---基础信息
  */
-public class mergeExcel {
+public class AxOfficerBasic {
     private final static String excel2003=".xls";
     private final static String excel2007=".xlsx";
     public static void main(String[] args) throws Exception {
-       String filePath="C:\\Users\\Administrator\\Desktop\\ffd";
+        String filePath="C:\\Users\\Administrator\\Desktop\\ppp";
 
-           getFiles(filePath);
+        getFiles(filePath);
 
     }
 
@@ -35,11 +32,11 @@ public class mergeExcel {
             Workbook workbook=getWorkBook(in,file.getName());
             String fileType=file.getName().substring(file.getName().lastIndexOf("."));
             if(excel2003.equals(fileType)){
-               workbook=readSheet(workbook,2003);
+                workbook=readSheet(workbook,2003);
             }else if(excel2007.equals(fileType)){
-               workbook=readSheet(workbook,2007);
+                workbook=readSheet(workbook,2007);
             }
-            FileOutputStream fo = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\dddd\\"+file.getName()); // 输出到文件
+            FileOutputStream fo = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\aaa\\"+file.getName()); // 输出到文件
             workbook.write(fo);
         }
 
@@ -67,44 +64,69 @@ public class mergeExcel {
         String officerId;
         String index;
         int lastNum=0;
-
-
-        //得到这个sheet一共有多少行数据，因为sheet.getLastRow不准
-        for(int i=3;;i++){
-            Cell c=sheet.getRow(i).getCell(0);
-            boolean isMerge=isMergedRegion(sheet,i,c.getColumnIndex());
-            if(isMerge){
-                index=getMergedRegionValue(sheet,sheet.getRow(i).getRowNum(),c.getColumnIndex());
-            }else{
-                index=getCellValue(sheet.getRow(i).getCell(0));
-            }
-            if(index.trim().equals("end")){
-                lastNum=i;
-                break;
-            }
-        }
-        StringBuffer sb=new StringBuffer();
         Sheet sheetNew=wb.createSheet();
-        Row rowNew=null;
-        Cell cellNew=cell;
-        int k=0;
-        for(int i=0;i<=lastNum;i++){
-            rowNew=sheetNew.createRow(k++);
-            int p=0;
-            String val="";
+        Row rowNew;
+        Cell cellNew;
+        StringBuffer sb=new StringBuffer();
+        row=sheet.getRow(1);
+//        for(Cell c:row){
+//          sb.append(getCellValue(c)+"   ");
+//        }
+        int j=0;
+        int n=1;
+        int k;
+        for(int i=1;i<=sheet.getLastRowNum();i++){
+            k=0;
+            rowNew=sheetNew.createRow(i-1);
             for(Cell c:sheet.getRow(i)){
-                cellNew=rowNew.createCell(p++);
-                boolean isMerge=isMergedRegion(sheet,i,c.getColumnIndex());
-                if(isMerge){
-                    val=getMergedRegionValue(sheet,sheet.getRow(i).getRowNum(),c.getColumnIndex());
-                    cellNew.setCellValue(val);
-                    sb.append(val+"  ");
+                if(i==1){
+                    cellNew=rowNew.createCell(k);
+                    switch (k){
+                        case 0:
+                            cellNew.setCellValue("index");break;
+                        case 1:
+                            cellNew.setCellValue("name");break;
+                        case 2:
+                            cellNew.setCellValue("id_card");break;
+                        case 3:
+                            cellNew.setCellValue("sex");break;
+                        case 4:
+                            cellNew.setCellValue("nation");break;
+                        case 5:
+                            cellNew.setCellValue("ji_guan");break;
+                        case 6:
+                            cellNew.setCellValue("birth");break;
+                        case 7:
+                            cellNew.setCellValue("age");break;
+                        case 8:
+                            cellNew.setCellValue("edu");break;
+                        case 9:
+                            cellNew.setCellValue("healthy");break;
+                        case 10:
+                            cellNew.setCellValue("marriage");break;
+                        case 11:
+                            cellNew.setCellValue("telephone");break;
+                        case 12:
+                            cellNew.setCellValue("address");break;
+                        case 13:
+                            cellNew.setCellValue("polity");break;
+                        case 14:
+                            cellNew.setCellValue("join_party");break;
+                        case 15:
+                            cellNew.setCellValue("join_work");break;
+                        case 16:
+                            cellNew.setCellValue("company");break;
+                        case 17:
+                            cellNew.setCellValue("duty");break;
+                        default:
+                            cellNew.setCellValue("duty_level");
+                    }
                 }else{
-                    sb.append(getCellValue(c)+"  ");
+                    cellNew=rowNew.createCell(k);
                     cellNew.setCellValue(getCellValue(c));
                 }
+                k++;
             }
-            sb.append("\n");
         }
         System.out.println(sb.toString());
         return wb;
@@ -156,6 +178,7 @@ public class mergeExcel {
 
         if(cell == null) return "";
 
+
         if(cell.getCellType() == Cell.CELL_TYPE_STRING){
 
             return cell.getStringCellValue();
@@ -169,9 +192,26 @@ public class mergeExcel {
             return cell.getCellFormula() ;
 
         }else if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC){
+//            if(DateUtil.isCellDateFormatted(cell)){
+//                DataFormatter dataFormatter=new DataFormatter();
+//                Format format=dataFormatter.createFormat(cell);
+//                Date date=cell.getDateCellValue();
+//                String str=format.format(date);
+//                return str;
+//            }
+            short format=cell.getCellStyle().getDataFormat();
+            SimpleDateFormat sdf=null;
+            if(format==57){
+                sdf=new SimpleDateFormat("yyyy年MM月");
+                double value=cell.getNumericCellValue();
+                Date date=DateUtil.getJavaDate(value);
+                return sdf.format(date);
+            }
 
             return String.valueOf(cell.getNumericCellValue());
 
+        }else if(cell.getCellType()==Cell.CELL_TYPE_STRING){
+            return   cell.getRichStringCellValue().getString();
         }
         return "";
     }
