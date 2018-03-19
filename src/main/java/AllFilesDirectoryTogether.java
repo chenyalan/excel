@@ -13,11 +13,11 @@ import java.util.List;
  * created by 陈亚兰 on 18-3-13
  * 雄安新区-个人信息下所有子目录所有.xlsx文件，存放在58目录下
  */
-public class Main222 {
+public class AllFilesDirectoryTogether {
     private final static String excel2003=".xls";
     private final static String excel2007=".xlsx";
     public static void main(String[] args) throws Exception {
-       String filePath="C:\\Users\\Administrator\\Desktop\\XA数据（0310汇总版）\\XA数据（0310汇总版）\\雄安新区\\个人信息";
+       String filePath="C:\\Users\\Administrator\\Desktop\\XA数据314\\XA数据（0310汇总版）\\容城\\村干部\\个人信息\\容城县各乡镇上报书记、村主任信息采集表";
 
 //           getFiles(filePath);
         test(filePath);
@@ -46,7 +46,7 @@ public class Main222 {
             System.out.println("================================="+file.getName()+"=========================================");
             InputStream in=new FileInputStream(file);
             Workbook workbook=getWorkBook(in,file.getName());
-            FileOutputStream fo = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\58\\"+file.getName()); // 输出到文件
+            FileOutputStream fo = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\村干部所有信息存放在一起\\"+file.getName()); // 输出到文件
             workbook.write(fo);
         }
     }

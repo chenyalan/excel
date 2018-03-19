@@ -16,11 +16,11 @@ import java.util.*;
  * Created by 陈亚兰 on 2018/3/15.
  * 判断八于乡
  */
-public class CreateWorkbook {
+public class CreateWorkbook22 {
     private final static String excel2003=".xls";
     private final static String excel2007=".xlsx";
     public static void main(String[] args) throws Exception {
-        String filePath="C:\\Users\\Administrator\\Desktop\\村干部所有信息存放在一起";
+        String filePath="C:\\Users\\Administrator\\Desktop\\special";
 
         getFiles(filePath);
 
@@ -36,19 +36,25 @@ public class CreateWorkbook {
             InputStream in=new FileInputStream(file);
             Workbook workbook=getWorkBook(in,file.getName());
             String fileType=file.getName().substring(file.getName().lastIndexOf("."));
+            if(fileType.equals(".ini"))continue;
             if(excel2003.equals(fileType)){
                 workbook=readSheet(workbook,2003);
             }else if(excel2007.equals(fileType)){
                 workbook=readSheet(workbook,2007);
             }
-            Sheet sheet=workbook.getSheetAt(0);
+            Sheet sheet=null;
+            try{
+                sheet=workbook.getSheetAt(0);
+            }catch (Exception e){
+                System.out.print("file:"+file);
+            }
 
             Cell cell;
             Cell cellNext;
             Row row;
             StringBuffer sb=new StringBuffer();
             Map<String,String> map=new LinkedHashMap<String, String>();
-            for(int i=3;i<=8;i++){
+            for(int i=2;i<=7;i++){
                 row=sheet.getRow(i);
                 for(int j=0;j<row.getLastCellNum();j++){
                     cell=row.getCell(j);
@@ -57,7 +63,6 @@ public class CreateWorkbook {
                         case 3:
                         case 7:
                             cellNext=row.getCell(j+1);
-
                             map.put(getCellValue(cell),getCellValue(cellNext));
                     }
                 }
@@ -75,7 +80,7 @@ public class CreateWorkbook {
             rowNew=sheetNew.createRow(k);
             k++;
 
-             for(int i=11;i<sheet.getLastRowNum();i++){
+             for(int i=10;i<sheet.getLastRowNum();i++){
                  List<String> list=new ArrayList<String>();
                  row=sheet.getRow(i);
                  for(int j=0;j<10;j++){
@@ -117,10 +122,6 @@ public class CreateWorkbook {
                     cellNew=rowNew.createCell(t);
                     String val=ma.getValue();
                     if(t==9||t==16||t==17){
-                        //fd
-
-                        //
-
                         double d;
                         try{
                             d = Double.parseDouble(val);
@@ -157,11 +158,12 @@ public class CreateWorkbook {
                     }else{
                         cellNew.setCellValue(val);
                     }
+//                    cellNew.setCellValue(val);
                     t++;
                 }
             }
 
-            FileOutputStream fo = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\rc1\\"+file.getName()); // 输出到文件
+            FileOutputStream fo = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\rc2\\"+file.getName()); // 输出到文件
             wbNew.write(fo);
         }
 

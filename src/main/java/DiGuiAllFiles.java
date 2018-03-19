@@ -31,6 +31,6 @@ public class DiGuiAllFiles {
     }
 
     public static void main(String[] args) {
-        test("C:\\Users\\Administrator\\Desktop\\XA数据314\\XA数据（0310汇总版）\\雄安新区\\个人信息");
+        test("C:\\Users\\Administrator\\Desktop\\XA数据314\\XA数据（0310汇总版）\\容城\\村干部\\个人信息\\容城县各乡镇上报书记、村主任信息采集表");
     }
 }

@@ -17,8 +17,8 @@ public class JudgeZiduanBayuxiang {
     private final static String excel2003=".xls";
     private final static String excel2007=".xlsx";
     public static void main(String[] args) throws Exception {
-        String filePath="C:\\Users\\Administrator\\Desktop\\XA数据314\\XA数据（0310汇总版）\\容城\\村干部\\个人信息\\容城县各乡镇上报书记、村主任信息采集表\\八于乡村党组、村委会信息采集表";
-
+       // String filePath="C:\\Users\\Administrator\\Desktop\\村干部所有信息存放在一起";
+String filePath="C:\\Users\\Administrator\\Desktop\\special";
         getFiles(filePath);
 
     }
@@ -58,6 +58,7 @@ public class JudgeZiduanBayuxiang {
     //读取excel文件
     private static Workbook readSheet(Workbook wb,int type) throws FileNotFoundException {
         Sheet sheet = wb.getSheetAt(0);//读取第一个sheet页表格内容
+        if(sheet.getRow(1).getCell(0)==null&&sheet.getRow(0).getCell(0)==null) return wb;
         Object value = null;
         Row row = null;
         Cell cell = null;
@@ -65,9 +66,11 @@ public class JudgeZiduanBayuxiang {
         String officerId;
         String index;
         int lastNum=0;
-        row=sheet.getRow(10);
+        row=sheet.getRow(9);
         StringBuffer sb=new StringBuffer();
         for(Cell c:row){
+            if(c==null)
+                continue;
             sb.append(getCellValue(c)+"  ");
         }
         System.out.println(sb.toString());
