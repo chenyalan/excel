@@ -14,7 +14,7 @@ public class JudgeZiDuan {
     private final static String excel2003=".xls";
     private final static String excel2007=".xlsx";
     public static void main(String[] args) throws Exception {
-        String filePath="C:\\Users\\Administrator\\Desktop\\雄安新区所有文件";
+        String filePath="C:\\Users\\Administrator\\Desktop\\cdg";
 
         getFiles(filePath);
 
@@ -54,7 +54,7 @@ public class JudgeZiDuan {
 
     //读取excel文件
     private static Workbook readSheet(Workbook wb,int type) throws FileNotFoundException {
-        Sheet sheet = wb.getSheetAt(6);//读取第一个sheet页表格内容
+        Sheet sheet = wb.getSheetAt(1);//读取第一个sheet页表格内容
         Object value = null;
         Row row = null;
         Cell cell = null;
@@ -62,7 +62,7 @@ public class JudgeZiDuan {
         String officerId;
         String index;
         int lastNum=0;
-        row=sheet.getRow(1);
+        row=sheet.getRow(2);
         StringBuffer sb=new StringBuffer();
         for(Cell c:row){
             sb.append(getCellValue(c)+"  ");

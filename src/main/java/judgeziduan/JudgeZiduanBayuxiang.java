@@ -20,7 +20,6 @@ public class JudgeZiduanBayuxiang {
        // String filePath="C:\\Users\\Administrator\\Desktop\\村干部所有信息存放在一起";
 String filePath="C:\\Users\\Administrator\\Desktop\\special";
         getFiles(filePath);
-
     }
 
     private static void getFiles(String filePath) throws Exception {

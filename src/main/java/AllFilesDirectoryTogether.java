@@ -17,13 +17,13 @@ public class AllFilesDirectoryTogether {
     private final static String excel2003=".xls";
     private final static String excel2007=".xlsx";
     public static void main(String[] args) throws Exception {
-       String filePath="C:\\Users\\Administrator\\Desktop\\XA数据314\\XA数据（0310汇总版）\\容城\\村干部\\个人信息\\容城县各乡镇上报书记、村主任信息采集表";
-
+       String filePath="C:\\Users\\Administrator\\Desktop\\xx";
+       String toPath="C:\\Users\\Administrator\\Desktop\\netw\\";
 //           getFiles(filePath);
-        test(filePath);
+        test(filePath,toPath);
     }
 
-    private static void test(String fileDir) throws IOException {
+    private static void test(String fileDir,String toPath) throws IOException {
         List<File> fileList = new ArrayList<File>();
         File fi= new File(fileDir);
         File[] files = fi.listFiles();// 获取目录下的所有文件或文件夹
@@ -33,12 +33,12 @@ public class AllFilesDirectoryTogether {
         // 遍历，目录下的所有文件
         for (File f : files) {
             if (f.isFile()) {
-                if(f.getName().endsWith(".xlsx")){
+                if(f.getName().endsWith(".xlsx")||f.getName().toLowerCase().endsWith(".xls")){
                     fileList.add(f);
                 }
             } else if (f.isDirectory()) {
                 System.out.println(f.getAbsolutePath());
-                test(f.getAbsolutePath());
+                test(f.getAbsolutePath(),toPath);
             }
         }
         for (File file : fileList) {
@@ -46,7 +46,7 @@ public class AllFilesDirectoryTogether {
             System.out.println("================================="+file.getName()+"=========================================");
             InputStream in=new FileInputStream(file);
             Workbook workbook=getWorkBook(in,file.getName());
-            FileOutputStream fo = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\村干部所有信息存放在一起\\"+file.getName()); // 输出到文件
+            FileOutputStream fo = new FileOutputStream(toPath+file.getName()); // 输出到文件
             workbook.write(fo);
         }
     }
